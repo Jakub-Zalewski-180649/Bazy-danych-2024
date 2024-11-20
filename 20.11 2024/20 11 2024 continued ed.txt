@@ -1,0 +1,156 @@
+create table postac(
+id_postaci INTEGER primary key auto_increment,
+nazwa varchar(40),
+rodzaj ENUM('wiking', 'ptak', 'kobieta'),
+data_ur DATE,
+wiek INTEGER);
+
+
+
+INSERT INTO postac (nazwa, rodzaj, data_ur, wiek) 
+VALUES ('bjorn', 'wiking', '1970-12-11', 54),
+('drozd', 'ptak', '2010-1-12', 14),
+('tesciowa', 'kobieta', '1937-10-01', 87);
+
+
+update postac
+set wiek = 88
+WHERE nazwa = 'tesciowa';
+
+create table walizka(
+id_walizki INTEGER primary KEY auto_increment,
+pojemnosc INTEGER UNSIGNED,
+kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty'),
+id_wlasciciela INTEGER,
+FOREIGN KEY (id_wlasciciela) REFERENCES postac(id_postaci) ON DELETE CASCADE);
+
+Alter TABLE walizka ALTER kolor set DEFAULT 'rozowy';
+
+insert into walizka(id_wlasciciela)
+VALUES (1),(3);
+
+create table izba(
+adress_budynku INTEGER,
+nazwa_izby VARCHAR(45),
+Primary key(adress_budynku, nazwa_izby),
+metraz integer,
+id_wlasciciela Integer,
+FOREIGN KEY (id_wlasciciela) REFERENCES postac(id_postaci) ON DELETE CASCADE);
+
+alter TABLE izba ADD kolor_izby enum('czarny') DEFAULT 'czarny' AFTER metraz;
+
+INSERT into izba(nazwa_izby, adress_budynku)
+VALUES ('spizarnia', 1984);
+
+CREATE TABLE przetwory (
+id_przetworu INTEGER PRIMARY KEY AUTO_INCREMENT,
+rok_produkcji DATE DEFAULT '1645-01-01',
+id_wykonawcy INTEGER,
+zawartosc VARCHAR(255),
+dodatek VARCHAR(255) DEFAULT 'papryczka chili',
+id_konsumenta INTEGER,
+FOREIGN KEY (id_wykonawcy) REFERENCES postac(id_postaci),
+FOREIGN KEY (id_konsumenta) REFERENCES postac(id_postaci));
+
+INSERT into przetwory(id_wykonawcy, zawartosc, id_konsumenta)
+VALUES(1,'bigos',3);
+
+
+INSERT INTO postac (nazwa, rodzaj, data_ur, wiek) 
+VALUES ('wiking1', 'wiking', '1970-12-11', 54),
+('wiking2', 'wiking', '1970-12-11', 54),
+('wiking3', 'wiking', '1970-12-11', 54),
+('wiking4', 'wiking', '1970-12-11', 54),
+('wiking5', 'wiking', '1970-12-11', 54);
+
+create TABLE statek (
+nazwa_statku varchar(255) PRIMARY key,
+rodzaj_statku enum('transport'),
+data_wodowania date,
+max_ladownosc int unsigned);
+
+--finished start:
+
+INSERT INTO statek (nazwa_statku, rodzaj_statku)
+VALUES('statek1','transport'),('statek2','transport');
+
+alter TABLE postac ADD funkcja varchar(45);
+
+UPDATE postac set funkcja = 'kapitan' WHERE nazwa = 'bjorn';
+alter table postac add id_statu varchar(255);
+alter TABLE postac add FOREIGN KEY (id_statku) REFERENCES statek(nazwa_statku);
+
+update postac set id_statku='statek1' WHERE id_statku=NULL
+update postac set id_statku=NULL where nazwa= 'tesciowa'
+delete from izba where nazwa_izby='spizarnia';
+drop table izba;
+
+
+-- leckaja 2 start:
+
+
+DELETE from postac WHERE nazwa in ('wiking4', 'wiking5');
+
+--cant drop foregin key
+ALTER TABLE walizka drop FOREIGN KEY id_wlasciciela;
+ALTER TABLE walizka drop  id_wlasciciela;
+ALTER TABLE postac DROP COLUMN id_postaci;
+
+--cant drop primary key
+ALTER TABLE postac drop PRIMARY KEY;
+
+alter TABLE postac ADD pesel varchar(11);
+alter TABLE postac ADD PRIMARY KEY (pesel);
+alter table postac MODIFY rodzaj enum('wiking', 'ptak', 'kobieta', 'syrena');
+
+INSERT INTO postac (nazwa, rodzaj, data_ur, wiek) 
+VALUES('Gertruda Nieszczera', 'syrena', '2024-11-06', 0);
+
+update postac set id_statku='statek1' WHERE nazwa='tesciowa';
+--b) Zmniejsz ładowność wszystkim statkom o 30%,
+-- których data wodowania była w XX wieku 
+--nie ma statkow z XX wieku
+--update statek set max_ladownosc = maxladownosc*0.7 where 1899-12-30<data_wodowania<2000-01-01
+
+alter table postac add CONSTRAINT check (wiek BETWEEN 0 and 1000);
+INSERT into postac(nazwa)
+VALUES('woz loko');
+
+create TABLE marynaz(
+nazwa varchar(40),
+rodzaj ENUM('wiking', 'ptak', 'kobieta', 'syrena'),
+data_ur DATE,
+wiek INTEGER,
+pesel varchar(13) PRIMARY KEY);
+INSERT into marynaz (nazwa, rodzaj, data_ur, wiek, pesel)
+VALUES('wiking1', 'wiking', '1970-12-11', 54,0000000000001),
+('wiking2', 'wiking', '1970-12-11', 54,0000000000002),
+('wiking3', 'wiking', '1970-12-11', 54,0000000000003),
+('bjorn', 'wiking', '1970-12-11', 54,0000000000004),
+('drozd', 'ptak', '2010-1-12', 14,0000000000005),
+('tesciowa', 'kobieta', '1937-10-01', 87,0000000000006);
+--c) dostosuj odpowiednio klucze główne i obce
+--????
+
+--wysadz wysztkich ze statku
+--jak sie statek zniknie to u nich tez zniknie, chyba.
+DELETE from postac WHERE nazwa='wiking3';
+
+DELETE FROM statek WHERE nazwa_statku in ('statek1' 'statek2');
+ALTER TABLE postac drop FOREIGN KEY id_statku;
+
+--cant delete due to uhhhhh, cant delete refereced table
+drop TABLE statek;
+
+create table zwierz(
+zwierz_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+nazwa varchar(45),
+wiek INTEGER);
+INSERT into zwierz(nazwa, wiek)
+VALUES('drozd', 14),
+('woz loko', 0);
+
+--Lekcja 3
+select kreatura, zasob, ekwipunek into zalewskij from wikingowie;
+
+
