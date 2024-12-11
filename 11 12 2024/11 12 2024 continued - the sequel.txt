@@ -276,14 +276,14 @@ left join uczestnicy u on ex.id_wyprawy = u.id_uczestnika
 left join kreatura c on u.id_uczestnika = c.idkreatury
 group by ex.nazwa;
 
---select ex.nazwa, count(u.id_uczestnika), group_concat(m.id_nazwa)
---from wyprwa ex
---left join( 
---select u.id_wyprawy, c.nazwa 
---from
---uczestnicy u 
---join kreatura c on u.id_uczestnika=c.idkreatury ) m ex.id_wyprawy = m.id_wyprawy
---group by ex.name;
+select ex.nazwa, count(u.id_uczestnika), group_concat(m.nazwa)
+from wyprawa ex
+left join( 
+select u.id_wyprawy, c.nazwa 
+from uczestnicy u 
+join kreatura c on u.id_uczestnika = c.idkreatury 
+) m on ex.id_wyprawy = m.id_wyprawy
+group by ex.nazwa;
 -- might display first one doesnt display all, this apparently should but cant debug it.
 
 --zad 3
