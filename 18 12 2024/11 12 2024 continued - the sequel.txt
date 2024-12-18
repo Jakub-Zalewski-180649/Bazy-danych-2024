@@ -1,0 +1,358 @@
+create table postac(
+id_postaci INTEGER primary key auto_increment,
+nazwa varchar(40),
+rodzaj ENUM('wiking', 'ptak', 'kobieta'),
+data_ur DATE,
+wiek INTEGER);
+
+
+
+INSERT INTO postac (nazwa, rodzaj, data_ur, wiek) 
+VALUES ('bjorn', 'wiking', '1970-12-11', 54),
+('drozd', 'ptak', '2010-1-12', 14),
+('tesciowa', 'kobieta', '1937-10-01', 87);
+
+
+update postac
+set wiek = 88
+WHERE nazwa = 'tesciowa';
+
+create table walizka(
+id_walizki INTEGER primary KEY auto_increment,
+pojemnosc INTEGER UNSIGNED,
+kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty'),
+id_wlasciciela INTEGER,
+FOREIGN KEY (id_wlasciciela) REFERENCES postac(id_postaci) ON DELETE CASCADE);
+
+Alter TABLE walizka ALTER kolor set DEFAULT 'rozowy';
+
+insert into walizka(id_wlasciciela)
+VALUES (1),(3);
+
+create table izba(
+adress_budynku INTEGER,
+nazwa_izby VARCHAR(45),
+Primary key(adress_budynku, nazwa_izby),
+metraz integer,
+id_wlasciciela Integer,
+FOREIGN KEY (id_wlasciciela) REFERENCES postac(id_postaci) ON DELETE CASCADE);
+
+alter TABLE izba ADD kolor_izby enum('czarny') DEFAULT 'czarny' AFTER metraz;
+
+INSERT into izba(nazwa_izby, adress_budynku)
+VALUES ('spizarnia', 1984);
+
+CREATE TABLE przetwory (
+id_przetworu INTEGER PRIMARY KEY AUTO_INCREMENT,
+rok_produkcji DATE DEFAULT '1645-01-01',
+id_wykonawcy INTEGER,
+zawartosc VARCHAR(255),
+dodatek VARCHAR(255) DEFAULT 'papryczka chili',
+id_konsumenta INTEGER,
+FOREIGN KEY (id_wykonawcy) REFERENCES postac(id_postaci),
+FOREIGN KEY (id_konsumenta) REFERENCES postac(id_postaci));
+
+INSERT into przetwory(id_wykonawcy, zawartosc, id_konsumenta)
+VALUES(1,'bigos',3);
+
+
+INSERT INTO postac (nazwa, rodzaj, data_ur, wiek) 
+VALUES ('wiking1', 'wiking', '1970-12-11', 54),
+('wiking2', 'wiking', '1970-12-11', 54),
+('wiking3', 'wiking', '1970-12-11', 54),
+('wiking4', 'wiking', '1970-12-11', 54),
+('wiking5', 'wiking', '1970-12-11', 54);
+
+create TABLE statek (
+nazwa_statku varchar(255) PRIMARY key,
+rodzaj_statku enum('transport'),
+data_wodowania date,
+max_ladownosc int unsigned);
+
+--finished start:
+
+INSERT INTO statek (nazwa_statku, rodzaj_statku)
+VALUES('statek1','transport'),('statek2','transport');
+
+alter TABLE postac ADD funkcja varchar(45);
+
+UPDATE postac set funkcja = 'kapitan' WHERE nazwa = 'bjorn';
+alter table postac add id_statu varchar(255);
+alter TABLE postac add FOREIGN KEY (id_statku) REFERENCES statek(nazwa_statku);
+
+update postac set id_statku='statek1' WHERE id_statku=NULL
+update postac set id_statku=NULL where nazwa= 'tesciowa'
+delete from izba where nazwa_izby='spizarnia';
+drop table izba;
+
+
+-- leckaja 2 start:
+
+
+DELETE from postac WHERE nazwa in ('wiking4', 'wiking5');
+
+--cant drop foregin key
+ALTER TABLE walizka drop FOREIGN KEY id_wlasciciela;
+ALTER TABLE walizka drop  id_wlasciciela;
+ALTER TABLE postac DROP COLUMN id_postaci;
+
+--cant drop primary key
+ALTER TABLE postac drop PRIMARY KEY;
+
+alter TABLE postac ADD pesel varchar(11);
+alter TABLE postac ADD PRIMARY KEY (pesel);
+alter table postac MODIFY rodzaj enum('wiking', 'ptak', 'kobieta', 'syrena');
+
+INSERT INTO postac (nazwa, rodzaj, data_ur, wiek) 
+VALUES('Gertruda Nieszczera', 'syrena', '2024-11-06', 0);
+
+update postac set id_statku='statek1' WHERE nazwa='tesciowa';
+--b) Zmniejsz ładowność wszystkim statkom o 30%,
+-- których data wodowania była w XX wieku 
+--nie ma statkow z XX wieku
+--update statek set max_ladownosc = maxladownosc*0.7 where 1899-12-30<data_wodowania<2000-01-01
+
+alter table postac add CONSTRAINT check (wiek BETWEEN 0 and 1000);
+INSERT into postac(nazwa)
+VALUES('woz loko');
+
+create TABLE marynaz(
+nazwa varchar(40),
+rodzaj ENUM('wiking', 'ptak', 'kobieta', 'syrena'),
+data_ur DATE,
+wiek INTEGER,
+pesel varchar(13) PRIMARY KEY);
+INSERT into marynaz (nazwa, rodzaj, data_ur, wiek, pesel)
+VALUES('wiking1', 'wiking', '1970-12-11', 54,0000000000001),
+('wiking2', 'wiking', '1970-12-11', 54,0000000000002),
+('wiking3', 'wiking', '1970-12-11', 54,0000000000003),
+('bjorn', 'wiking', '1970-12-11', 54,0000000000004),
+('drozd', 'ptak', '2010-1-12', 14,0000000000005),
+('tesciowa', 'kobieta', '1937-10-01', 87,0000000000006);
+--c) dostosuj odpowiednio klucze główne i obce
+--????
+
+--wysadz wysztkich ze statku
+--jak sie statek zniknie to u nich tez zniknie, chyba.
+DELETE from postac WHERE nazwa='wiking3';
+
+DELETE FROM statek WHERE nazwa_statku in ('statek1' 'statek2');
+ALTER TABLE postac drop FOREIGN KEY id_statku;
+
+--cant delete due to uhhhhh, cant delete refereced table
+drop TABLE statek;
+
+create table zwierz(
+zwierz_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+nazwa varchar(45),
+wiek INTEGER);
+INSERT into zwierz(nazwa, wiek)
+VALUES('drozd', 14),
+('woz loko', 0);
+
+--Lekcja 3
+create table zalewskij.kreatura as select * from wikingowie.kreatura;
+create table zalewskij.ekwipunek as select * from wikingowie.ekwipunek;
+create table zalewskij.zasob as select * from wikingowie.zasob;
+
+select * from kreatura where rodzaj = "wiedzma" and waga >=50;
+select * from zasob where waga >2 and waga<5;
+select * from kreatura where nazwa like '%or%' and waga >30 and waga<50;
+
+select * from zasob where month(dataPozyskania) in (7,8);
+select * from kreatura order by dataur ASC limit 5;
+
+select * from zasob where rodzaj in (select DISTINCT rodzaj from zasob);
+select nazwa, rodzaj from kreatura where rodzaj like 'wi%';
+select nazwa, ilosc*waga from zasob where year(dataPozyskania)>=2000 and year(dataPozyskania)<=2007;
+
+select nazwa, ilosc, rodzaj, waga * 0.7 from zasob where rodzaj='jedzenie';
+select * from zasob where rodzaj is NULL;
+select * from zasob where rodzaj in (select DISTINCT rodzaj from zasob) and nazwa like 'ba%' order by nazwa asc;
+--lekcja 4
+
+select avg(waga) from kreatura where rodzaj='wiking';
+select rodzaj, avg(waga) from kreatura group  by rodzaj;
+select rodzaj, avg(datediff(CURRENT_DATE,dataur)) from kreatura group by rodzaj;
+
+--zad2
+select rodzaj, sum(waga) from zasob group by rodzaj;
+select rodzaj, sum(waga) from zasob group by rodzaj having ilosc>4 and sum(waga)>10;
+select COUNT(DISTINCT nazwa), rodzaj from zasob group by rodzaj having ilosc>1;
+
+--zad3
+--ile posiada
+
+select creature.idkreatury, creature.nazwa, count(eq.idkreatury) as ilosc
+from kreatura creature
+left join ekwipunek eq on creature.idkreatury = eq.idkreatury
+group by creature.idkreatury, creature.nazwa;
+
+--jakie posiada
+
+select creature.idkreatury, creature.nazwa, (select nazwa from zasob where idZasobu=item.idZasobu) 
+from kreatura creature
+left join ekwipunek eq on creature.idkreatury = eq.idkreatury
+left join zasob item on eq.idZasobu = item.idZasobu;
+
+--te co nie posiadaja
+
+select creature.idkreatury, creature.nazwa
+from kreatura creature
+left join ekwipunek eq on creature.idkreatury = eq.idkreatury
+where eq.idkreatury is NULL;
+
+--zad 4
+--1
+select creature.idkreatury, creature.nazwa, (select nazwa from zasob where idZasobu=item.idZasobu) 
+from kreatura creature
+left join ekwipunek eq on creature.idkreatury = eq.idkreatury
+left join zasob item on eq.idZasobu = item.idZasobu
+where year(creature.dataur) BETWEEN 1670 and 1680;
+
+--2
+select creature.idkreatury, creature.nazwa, creature.dataur, group_concat(item.nazwa order by item.nazwa) as przedmioty
+from kreatura creature
+join ekwipunek eq on creature.idkreatury = eq.idkreatury
+join zasob item on eq.idZasobu = item.idZasobu
+where creature.idkreatury in(
+select DISTINCT p2.idkreatury
+from kreatura p2
+join ekwipunek ps2 on p2.idkreatury = ps2.idkreatury
+join zasob s2 on ps2.idZasobu = s2.idZasobu
+where s2.rodzaj = "jedzenie")
+group by creature.idkreatury, creature.nazwa, creature.dataur
+order by creature.dataur DESC
+limit 5;
+--3
+
+select group_concat(nazwa order by idkreatury) as nazwy
+from kreatura group by MOD(idkreatury, 5);
+
+--zad 5
+--1
+select c.idkreatury, c.nazwa, avg(s.waga* eq.ilosc)
+from kreatura c
+join ekwipunek eq on c.idkreatury = eq.idkreatury
+join zasob s on eq.idZasobu = s.idZasobu
+where c.rodzaj not in ('malpa', 'waz')
+group by c.idkreatury, c.nazwa
+having count(eq.idZasobu) <= 30
+order by c.idkreatury;
+--2
+
+select nazwa, rodzaj, dataUR From(
+select rodzaj, nazwa, dataUR,
+ROW_NUMBER() over (PARTITION by rodzaj order by dataUR asc) as rosno,
+ROW_NUMBER() over (PARTITION by rodzaj order by dataUR DESC) as malejo
+from kreatura) c
+where rosno = 1 or malejo = 1
+order by rodzaj, dataUR;
+
+--lekcja 5
+--zad 1
+--1
+
+create table zalewskij.kreatura as select * from wikingowie.kreatura;
+create table zalewskij.uczestnicy as select * from wikingowie.uczestnicy;
+create table zalewskij.etapy_wyprawy as select * from wikingowie.etapy_wyprawy;
+create table zalewskij.sektor as select * from wikingowie.sektor;
+create table zalewskij.wyprawa as select * from wikingowie.wyprawa;
+
+--2
+select idkreatury, nazwa
+from kreatura
+where idkreatury not in (select id_uczestnika from uczestnicy);
+--3
+select ex.nazwa, sum(eq.ilosc)
+from wyprawa ex
+join uczestnicy mem on ex.id_wyprawy = mem.id_wyprawy
+join ekwipunek eq on id_uczestnika = eq.idkreatury
+group by ex.nazwa;
+--zad 2
+select ex.nazwa, count(c.idkreatury), group_concat(c.nazwa order by c.nazwa)
+from wyprawa ex
+left join uczestnicy u on ex.id_wyprawy = u.id_uczestnika
+left join kreatura c on u.id_uczestnika = c.idkreatury
+group by ex.nazwa;
+
+select ex.nazwa, count(u.id_uczestnika), group_concat(m.nazwa)
+from wyprawa ex
+left join( 
+select u.id_wyprawy, c.nazwa 
+from uczestnicy u 
+join kreatura c on u.id_uczestnika = c.idkreatury 
+) m on ex.id_wyprawy = m.id_wyprawy
+group by ex.nazwa;
+-- might display first one doesnt display all, this apparently should but cant debug it.
+
+--zad 3
+--1
+select s.id_sektora, s.nazwa, COALESCE(v.ilosc, 0)
+from sektor s
+left join(
+select sektor, count(idwyprawy) as ilosc
+from etapy_wyprawy
+group by sektor
+) v on s.id_sektora = v.sektor;
+--2
+select c.idkreatury, c.nazwa, 
+CASE 
+	when u.id_wyprawy in (SELECT id_wyprawy from etapy_wyprawy)
+	then 'yes'
+	else 'no'
+end as bral_udzial
+from kreatura c
+join uczestnicy u on c.idkreatury = u.id_uczestnika;
+
+--zad4
+--1
+select e.nazwa, sum(LENGTH(etap.dziennik))
+from wyprawa e
+join etapy_wyprawy etap on e.id_wyprawy = etap.idwyprawy
+group by e.nazwa
+having sum(LENGTH(etap.dziennik)) > 400;
+--2
+
+Select e.nazwa, avg(s.waga * eq.ilosc)
+from wyprawa e
+join uczestnicy m on e.id_wyprawy = m.id_wyprawy
+join ekwipunek eq on m.id_uczestnika = eq.idkreatury
+join zasob s on eq.idzasobu - s.idzasobu
+group by e.nazwa;
+
+--zad5
+--1
+select k.nazwa, datediff(CURRENT_DATE(), e.data_rozpoczecia)
+from kreatura k
+join uczestnicy m on k.idkreatury = m.id_uczestnika
+join wyprawa e on m.id_wyprawy = e.id_wyprawy
+join etapy_wyprawy es on e.id_wyprawy = es.idwyprawy
+join sektor s on es.sektor = s.id_sektora
+where s.nazwa = "chatka dziadka";
+
+--LEKCJA 6
+--zad 1
+--1
+
+delimiter //
+
+CREATE OR REPLACE FUNCTION waga_sprawdz()
+RETURNS TRIGGER AS //
+BEGIN
+IF (SELECT waga FROM kreatura WHERE idkreatury = NEW.idkreatury) <= 0 THEN
+RAISE EXCEPTION 'waga kreatury jest >!0';
+END IF;
+
+RETURN NEW;
+END;
+//
+Delimiter ;
+
+
+Create trigger trigger_waga_sprawdz
+before insert or update on kreatura
+for each row
+EXECUTE FUNCTION sprawdz_waga();
+
+
