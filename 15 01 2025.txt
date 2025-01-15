@@ -1,0 +1,73 @@
+--1
+CREATE TABLE pracownik(
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+imie VARCHAR(255) NOT NULL,
+nazwisko VARCHAR(255) NOT NULL,
+data_urodzenia DATE,
+stanowisko enum('sprzedawca', 'magazynier', 'ksiegowa'));
+--2
+INSERT INTO pracownik (imie, nazwisko, stanowisko)
+VALUES
+('a', 'aa', 'sprzedawca'),
+('b', 'bb', 'magazynier'),
+('c', 'cc', 'ksiegowa');
+--3
+CREATE TABLE dzial(
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+nazwa VARCHAR(255));
+--4
+INSERT INTO dzial(nazwa)
+VALUES
+('sprzedarz')
+('magazyn')
+('ksiegowosc');
+--5
+ALTER TABLE pracownik
+MODIFY COLUMN stanowisko DEFAULT 'sprzedawca'
+--6
+ALTER TABLE pracownik
+ADD COLUMN pensja DECIMAL(7, 2)
+--7
+ALTER TABLE pracownik
+CHANGE id id_pracownika
+ALTER TABLE dzial
+CHANGE id id_dzialu
+CHANGE nzawa nazwa_dzialu
+--8
+delete from pracownik
+where id_pracownika = select( MAX(id_pracownika) from pracownik);
+--9
+ALTER TABLE pracownik
+FOREIGN KEY (id_dzialu)
+REFERENCES dzial (id_dzialu)
+--10
+CREATE TABLE stanowisko(
+id_stanowiska INTEGER PRIMARY KEY,
+nazwa_stanowsika VARCHAR(255));
+--11
+ALTER TABLE pracownik
+FOREIGN KEY (stanowisko)
+REFERENCES stanowisko(id_stanowiska);
+--12
+ALTER TABLE pracownik
+ALTER COLUMN dzial ON DELETE SET NULL;
+
+-----------------------------------------------------------------------------
+
+select nazwisko from pracownik 
+ORDER BY nazwisko
+--
+select imie, nazwisko, pensja from pracownik
+WHERE year(data_urodzenia) > 1979
+--
+select * from pracownik
+where pensja > 3500 and pensja <5000
+--
+select towar from stan_magaznynowy
+where ilosc >10;
+--
+select * from towar
+where nazwa like 'a%' or nazwa like 'b%' or nazwa like 'c%'
+-----------------------------------------------------------------------------
+
+
